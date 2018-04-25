@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <h1><center>E-Auction</center></h1>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <link rel="stylesheet" type="text/css" href="main.css">
+
+    <script src="../../node_modules/web3/dist/web3.min.js"></script>
+
+</head>
+<body>
+<div >
+<label for="name" class="col-lg-2 control-label">Bidder Address</label>
+ <input id="address" type="text"> <br> <br>
+ <label for="name" class="col-lg-2 control-label">Bidder Object name</label>
+ <input id="objname" type="text"> <br> <br>
+ <label for="name" class="col-lg-2 control-label">Bidder Amount</label>
+ <input id="amnt" type="text"> <br> <br>
+ <button id="button1">BID</button> <br> <br>
+ <button id="button2">GET</button> <br>
+ <br>
+ <br>
+ <form action="simple1.html">
+        <button>SUBMIT</button>
+        </form>
+</div>
+</body>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+
+<script>
+
+    if (typeof web3 !== 'undefined') {
+        web3 = new Web3(web3.currentProvider);
+    } else {
+        // set the provider you want from Web3.providers
+        web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+        web3.eth.defaultAccount = web3.eth.accounts[0];
+        console.log(web3.eth.defaultAccount)
+        var CoursetroContract = web3.eth.contract([
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_objectName",
+				"type": "string"
+			},
+			{
+				"name": "_objectInitialValue",
+				"type": "uint256"
+			}
+		],
+		"name": "createAuction",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_bidderAddress",
+				"type": "address"
+			},
+			{
+				"name": "_objectname",
+				"type": "string"
+			},
+			{
+				"name": "_objectBiddingValue",
+				"type": "uint256"
+			}
+		],
+		"name": "startBidding",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "bidderAddresses",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getBidderAddresses",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address[]"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_address",
+				"type": "address"
+			}
+		],
+		"name": "getBindingDetails",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "gethighestBidValue",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getInitialProductDetails",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	}
+]);
+
+
+ var Coursetro = CoursetroContract.at('0xd763e08c522c372d3aad97c47a34e3332ce2f312');
+        console.log(Coursetro);
+
+        $("#button2").click(function() {
+Coursetro.getInitialProductDetails(function(error, result){
+       
+        
+                {
+                    $("#get").html(result[0]+' ('+result[1]+' years old)');
+                    console.log(result);
+                }
+            })
+        })
+    
+
+        $("#button").click(function() {
+            Coursetro.createAuction($("#name").val(), $("#age").val())
+            // Coursetro.createAuction($("#name").val(), $("#age").val());
+            console.log("transaction successful")
+        });
+
+    
+    $("#button1").click(function() {
+            Coursetro.startBidding($("#address").val(), $("#objname").val(),$("#amnt").val(),{from: web3.eth.accounts[1], gas:4600000});
+            console.log("Bid transaction successful")
+        });
+
+         $("#button3").click(function() {
+            Coursetro.getBindingDetails($("#getbiddetails").val())
+          
+             $("#result").html(result[0]+' ('+result[1]+' years old)');
+            console.log(result[0])
+        
+    //    {
+    //        $("#getbiddetails").html(result[0]+' ('+result[1]+' years old)');
+    //        console.log(result);
+    //    }
+   })
+
+
+    }
+
+</script>
